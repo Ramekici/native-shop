@@ -5,7 +5,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import HeaderButton from '../../components/UI/HeaderButton';
 
 import Colors from '../../constants/Colors';
-import { addToProduct } from '../../store/actions/carts';
+import { addCart} from '../../store/actions/carts';
 
 export default ProductsDetailScreen = props => {
 
@@ -23,7 +23,8 @@ export default ProductsDetailScreen = props => {
             <View style={styles.actions}>
                 <Button 
                     color={Colors.primary} 
-                    onPress= {()=> dispatch(addToProduct(selectedProduct))}  
+                    onPress= {()=>
+                        dispatch(addCart(selectedProduct))}
                     title='Sepete Ekle'/>
             </View>
             <Text style={styles.price}> {selectedProduct.price} </Text>
@@ -63,6 +64,12 @@ const styles = StyleSheet.create({
 
 export const screenOptions = navData => {
     return {
-        headerTitle: navData.route.params.productTitle,   
+        headerTitle: navData.route.params.productTitle,
+        headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item title='Sepet'
+                    iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                    onPress={() => { navData.navigation.navigate('Cart') }} />
+            </HeaderButtons>)  
     }
 }

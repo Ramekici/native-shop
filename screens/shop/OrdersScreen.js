@@ -17,7 +17,7 @@ const OrdersScreen = props => {
     useEffect(()=>{
         setIsLoading(true);
         dispatch(orderActions.fetchOrders()).then(
-            ()=> {
+            () => {
                 setIsLoading(false)
             }
         );
@@ -37,6 +37,8 @@ const OrdersScreen = props => {
         </View>
     }
 
+    console.log(orders)
+
     return (
         <FlatList 
             data={orders}
@@ -44,7 +46,7 @@ const OrdersScreen = props => {
             renderItem={itemData => 
             <OrderItem 
                 amount={itemData.item.totalAmount}
-                date={itemData.item.readableDate}
+                date={itemData.item.date}
                 items={itemData.item.items}/>} 
         />
         

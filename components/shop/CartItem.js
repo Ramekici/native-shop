@@ -20,12 +20,12 @@ const CartItem = (props) => {
             <View style={styles.itemData}>
                 <Text style={styles.mainText}> {props.price} ₺ </Text>
                 {props.deleteable && 
-                <TouchableOpacity onPress= {props.onRemove} style={styles.deleteButton} >
+                <TouchableCmp onPress= {props.onRemove} style={styles.deleteButton} >
                     <Ionicons 
                         name={Platform.OS === 'android' ?  'md-trash': 'ios-trash'}
                         size={23}
                         color='red' />
-                </TouchableOpacity>}
+                </TouchableCmp>}
             </View>
         </View>
     )
@@ -33,13 +33,12 @@ const CartItem = (props) => {
 
 
 const styles = StyleSheet.create({
-
     cartItem:{
         flex:1,
         padding:10,
-        backgroundColor:'red',
+        backgroundColor:'white',
         flexDirection:'row',
-        justifyContent:'center',
+        justifyContent:'space-between',
         marginHorizontal: 20
     },
     itemData:{
@@ -47,7 +46,7 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     quantity:{
-        fontFamily: 'open-sans',
+        fontFamily:'open-sans',
         fontSize:16,
         color: '#888'
     },

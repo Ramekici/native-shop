@@ -1,4 +1,6 @@
 import Product from "../../models/product";
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
 
 export const DELETE_PRODUCT = 'DELETE_PRODUCT';
 export const CREATE_PRODUCT = 'CREATE_PRODUCT';
@@ -23,6 +25,7 @@ export const fetchProducts = () => {
             loadedProducts.push(new Product(
                 key,
                 resData[key].ownerId,
+                resData[key].ownerPushToken,
                 resData[key].title,
                 resData[key].imageUrl,
                 resData[key].description,
@@ -36,15 +39,32 @@ export const fetchProducts = () => {
             userProducts: loadedProducts.filter(prod => prod.ownerId === userId)
         })
         
-        }catch(err){
-            throw err;
+        } catch(err) {
+          throw err;
     }}   
 }
 
 export const createProduct = (title, description, imageUrl, price) => {
     return async (dispatch, getState) => {
+        let pushToken;
+
+        let statusObj = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+
+        if(statusObj.status!== 'granted'){
+            statusObj = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+        }
+
+        if(statusObj.status !== 'granted'){
+            pushToken = null;
+        }else {
+            pushToken = (await Notifications.getExpoPushTokenAsync()).data;
+        }
+
+        Notifications.getExpoPushTokenAsync();
+
         const token = getState().auth.token;
         const userId = getState().auth.userId;
+
         const response = await fetch(
             `https://react-native-a3ee9.firebaseio.com/products.json?auth=${token}`,
             {
@@ -57,7 +77,8 @@ export const createProduct = (title, description, imageUrl, price) => {
                     description,
                     imageUrl,
                     price,
-                    ownerId: userId
+                    ownerId: userId,
+                    ownerPushToken : pushToken
                 })
             }
         )
@@ -65,19 +86,21 @@ export const createProduct = (title, description, imageUrl, price) => {
             throw new Error('Something went wrong');
         }
         const resData = await response.json();
-        dispatch(fetchProducts());
 
-        //dispatch({
-        //    type:CREATE_PRODUCT,
-        //    productData:{
-        //        id: resData.name,
-        //        title,
-        //        description,
-        //        imageUrl,
-        //        price,
-        //        ownerId: userId
-        //    }
-        //})
+        //dispatch(fetchProducts());
+
+        dispatch({
+            type:CREATE_PRODUCT,
+            productData:{
+                id: resData.name,
+                title,
+                description,
+                imageUrl,
+                price,
+                ownerId: userId,
+                pushToken: pushToken
+            }
+        })
     }
 }
 

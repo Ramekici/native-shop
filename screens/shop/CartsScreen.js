@@ -1,7 +1,7 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {View, Text, StyleSheet, FlatList, Button, 
-    Platform, ActivityIndicator} from 'react-native';
+     ActivityIndicator} from 'react-native';
 
 import Colors from '../../constants/Colors';
 import CartItem from '../../components/shop/CartItem';
@@ -10,49 +10,51 @@ import Card from '../../components/UI/Card';
 import * as cartActions from '../../store/actions/carts';
 import * as orderActions from '../../store/actions/orders';
 
-const CartsScreen = props => {
+const CartsScreen = (props) => {
+
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState();
 
-    const cartTotalAmaunt =  useSelector(state => state.cart.totalAmount);
+    const cartTotalAmount =  useSelector(state => state.cart.totalAmount);
     const dispatch =  useDispatch();
-    const cartItems =  useSelector(state => state.cart.items)
+
+
+    const cartItems = useSelector(state => {
+        const transformedCartItems = [];
+        for (const key in state.cart.items) {
+            transformedCartItems.push({
+                productId: key,
+                productTitle: state.cart.items[key].productTitle,
+                productPrice: state.cart.items[key].productPrice,
+                quantity: state.cart.items[key].quantity,
+                sum: state.cart.items[key].sum,
+                productPushToken: state.cart.items[key].pushToken
+            })
+        }
+        return transformedCartItems.sort((a,b) => a.productId > b.productId ? 1 : -1);
+    })
+
     console.log(cartItems);
 
-
-    //const cartItems = useSelector(state => {
-    //    const transformedCartItems = [];
-    //    for (const key in state.cart.items) {
-    //        transformedCartItems.push({
-    //            productId: key,
-    //            productTitle: state.cart.items[key].productTitle,
-    //            productPrice: state.cart.items[key].productPrice,
-    //            quantity: state.cart.items[key].quantity,
-    //            sum: state.cart.items[key].sum
-    //        })
+    //const loadCart = useCallback(async () => {
+    //    setError(null);
+    //    try{
+    //        await dispatch(cartActions.fetchCart());
+    //    }catch(err){
+    //        setError(err.message)
     //    }
-    //    return transformedCartItems.sort((a,b) => a.productId > b.productId ? 1 : -1);
-    //})
+    //},[dispatch, setIsLoading, setError]);
 
-    const loadCart = useCallback(async () => {
-        setError(null);
-        try{
-            await dispatch(cartActions.fetchCart());
-        }catch(err){
-            setError(err.message)
-        }
-    },[dispatch, setIsLoading, setError]);
-
-    useEffect(()=> {
-        setIsLoading(true);
-        loadCart().then(()=>{
-            setIsLoading(false)
-        });
-    },[dispatch, loadCart])
+    //useEffect(()=> {
+     //   setIsLoading(true);
+     //   loadCart().then(()=>{
+     //       setIsLoading(false)
+    //    });
+    //},[dispatch, loadCart])
 
     const sendOrderHandler = async () =>{
         setIsLoading(true)
-        await dispatch(orderActions.addOrder(cartItems, cartTotalAmaunt));
+        await dispatch(orderActions.addOrder(cartItems, cartTotalAmount));
         setIsLoading(false)
     }
 
@@ -90,7 +92,7 @@ const CartsScreen = props => {
             <Card style={styles.summary}>
                 <Text style={styles.summaryText}> Toplam :  
                     <Text style={styles.amount}> 
-                    { Math.round(cartTotalAmaunt.toFixed(2)*100)/100} ₺
+                    { cartTotalAmount } ₺
                     </Text> 
                 </Text>
                 {isLoading ? <ActivityIndicator size="large" color={Colors.primary} />  : 
@@ -103,23 +105,20 @@ const CartsScreen = props => {
             </Card>
             <FlatList 
                 data={cartItems}
-                keyExtractor={item => item.id}
-                renderItem={itemData =>{
+                keyExtractor={item => item.productId}
+                renderItem={itemData =>
                     <CartItem
-                        quantity={itemData.item.imageUrl}
-                        price={itemData.item.price} 
-                        title= {itemData.item.title}
-                        amount={itemData.item.description}
+                        quantity={itemData.item.quantity}
+                        price={itemData.item.productPrice} 
+                        title= {itemData.item.productTitle}
+                        amount={itemData.item.sum}
                         deleteable
-                        onRemove= {()=> { 
-                            dispatch(cartActions.deleteProduct(itemData.item.productId))}}>
-
+                        onRemove= {()=> 
+                            dispatch(cartActions.deleteFromCart(itemData.item.productId))}>
                         <Button color= {Colors.primary} title='İncele'
                          onPress = {()=> {}} />
                     </CartItem>
-                    
-
-                }} />
+                } />
         </View>
         
     )
@@ -130,6 +129,7 @@ const CartsScreen = props => {
 styles = StyleSheet.create({
     screen:{
         margin:20,
+        flex: 1,
     },
     centered: {
         flex:1,
@@ -153,12 +153,13 @@ styles = StyleSheet.create({
     }
 })
 
-export default CartsScreen;
-
-
 export const screenOptions = navData =>  {
     return {
         headerTitle: 'Sepet'
     }
     
 }
+
+export default CartsScreen;
+
+

@@ -39,6 +39,7 @@ const formReducer = (state, action ) => {
 }
 
 const AuthScreen = props => {
+
     const dispatch = useDispatch()
     const [signUp, setsignUp] = useState(false);
     const [isLoading, setisLoading] = useState(false);
@@ -76,9 +77,9 @@ const AuthScreen = props => {
 
     const signUpHandler = async() => {
         let action;
-        if(signUp) {
+        if(signUp){
             action = authActions.signup(formState.inputVal.email, formState.inputVal.password)
-        } else {
+        }else{
             action= authActions.signin(formState.inputVal.email, formState.inputVal.password)
         }
         setError(null);
@@ -90,7 +91,7 @@ const AuthScreen = props => {
             setError(error.message);
             setisLoading(false);
         }
-        
+
     }
 
 
@@ -108,7 +109,7 @@ const AuthScreen = props => {
                                 label= 'Email Adresi'
                                 errorText= 'Email Adresini doğru giriniz'
                                 onChangeInput = {onChangeInputHandler}
-                                keyboardType='email-adresss'
+                                keyboardType='email-address'
                                 required
                                 initialValue=''
                             />
@@ -121,7 +122,7 @@ const AuthScreen = props => {
                                 required
                                 secureTextEntry
                                 initialValue=''
-                                autoCapitalize
+                                autoCapitalize='words'
                                 minLength={5}
                             />
                             <View style={styles.buttonContainer}>

@@ -44,6 +44,7 @@ const UserProductsScreen = props => {
             {text:'Evet', style:'destructive', onPress:()=> dispatch(deleteProduct(id)) }
         ])
     }
+
     if(error){
         return (
             <View style={styles.centered}>
@@ -112,13 +113,13 @@ export const screenOptions = navData => {
         headerLeft: () => ( 
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item title='Menu' 
-                    iconName={Platform.OS === 'android' ?  'md-menu': 'ios-menu'}
+                    iconName={Platform.OS === 'android' ? 'md-menu' : 'ios-menu'}
                     onPress={()=>{ navData.navigation.toggleDrawer()}} />
             </HeaderButtons>),
         headerRight: () => ( 
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
                 <Item title='Add' 
-                    iconName={Platform.OS === 'android' ?  'md-create': 'ios-create'}
+                    iconName={Platform.OS === 'android' ? 'md-create': 'ios-create'}
                     onPress={()=>{ navData.navigation.navigate('Edit')}} />
             </HeaderButtons>)
     }

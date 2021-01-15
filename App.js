@@ -9,9 +9,23 @@ import orderReducer from './store/reducers/orders';
 import authReducer from './store/reducers/auth';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import ReduxThunk from 'redux-thunk';
+import * as Notifications from 'expo-notifications';
 
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
+
+Notifications.setNotificationHandler({
+  handleNotification : async () => {
+    return {shouldShowAlert: true}
+  }
+});
+
+const rootReducer = combineReducers({
+  products: productReducer,
+  cart: cartReducer,
+  orders: orderReducer,
+  auth: authReducer
+})
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -20,12 +34,9 @@ const fetchFonts = () => {
   })
 }
 
-const rootReducer = combineReducers({
-  products: productReducer,
-  cart: cartReducer,
-  orders: orderReducer,
-  auth: authReducer
-})
+
+
+
 
 const store =  createStore(rootReducer, applyMiddleware(ReduxThunk), composeWithDevTools());
 
