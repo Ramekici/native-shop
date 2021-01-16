@@ -14,8 +14,8 @@ export const fetchOrders = () => {
                 throw new Error('Something went wrong');
             }
             const resData = await response.json();
+            
             const loadedOrders = [];
-            console.log(resData)
             for (const key in resData) {
                 loadedOrders.push(
                     new Order(
@@ -25,6 +25,7 @@ export const fetchOrders = () => {
                         new Date(resData[key].date)
                     ))
             }
+            console.log(loadedOrders);
             dispatch({
                 type: SET_ORDERS,
                 payload: loadedOrders
@@ -62,6 +63,7 @@ export const addOrder = (cartItems, totalAmount) => {
         }
 
         const respData = await response.json();
+        console.log(respData)
 
         dispatch({
             type: ADD_ORDER,

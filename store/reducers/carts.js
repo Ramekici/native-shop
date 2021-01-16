@@ -14,7 +14,9 @@ export default (state = initialState, action) => {
             const addedProduct = action.payload;
             const productPrice = parseInt(addedProduct.price);
             const productTitle = addedProduct.title;
+            const productImage = addedProduct.imageUrl;
             const pushToken = addedProduct.pushToken;
+            
 
             let updateOrNewCartItem;
             if (state.items[addedProduct.id]) {
@@ -23,21 +25,23 @@ export default (state = initialState, action) => {
                     productPrice,
                     productTitle,
                     pushToken,
-                    state.items[addedProduct.id].sum + productPrice
+                    state.items[addedProduct.id].sum + productPrice,
+                    productImage
                 );
             } else {
                 updateOrNewCartItem = new CartItem(1,
                     productPrice,
                     productTitle,
+                    pushToken,
                     productPrice,
-                    pushToken);
+                    productImage);
             }
             return {
                 items: { ...state.items, [addedProduct.id]: updateOrNewCartItem },
                 totalAmount: state.totalAmount + productPrice
             }
         case DELETE_FROM_CART:
-            const selectedCartItem = state.items[action.payload].quantity;
+            const selectedCartItem = state.items[action.payload];
             const currentQty = selectedCartItem.quantity;
             let updatedCartItems;
             if (currentQty > 1) {
@@ -45,7 +49,9 @@ export default (state = initialState, action) => {
                     selectedCartItem.quantity - 1,
                     selectedCartItem.productPrice,
                     selectedCartItem.productTitle,
-                    selectedCartItem.sum - selectedCartItem.productPrice
+                    selectedCartItem.pushToken,
+                    selectedCartItem.sum - selectedCartItem.productPrice,
+                    selectedCartItem.imageUrl
                 )
                 updatedCartItems = { ...state.items, [action.payload]: updatedCartItem }
 

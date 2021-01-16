@@ -12,8 +12,8 @@ const OrderItem = props => {
     return (
         <Card style={styles.orderItem}>
             <View style={styles.summary}>
-                <Text style={styles.totalAmount}> {props.amount.toFixed(2)} </Text>
-                <Text style={styles.date}> {props.date} </Text>
+                <Text style={styles.totalAmount}> Toplam: {props.amount.toFixed(2)} ₺ </Text>
+                <Text style={styles.date}> Date </Text>
             </View>
             <Button 
                 color={Colors.primary} 
@@ -22,14 +22,15 @@ const OrderItem = props => {
                 />
             {showDetail &&
             <View style={styles.detailOrders}>
-                {props.items.map(cartItem => {
+                {props.items.map(cartItem => 
                     <CartItem 
+                        imageUrl={cartItem.productImage}
                         key={cartItem.productId}
                         quantity={cartItem.quantity}
-                        amount={cartItem.sum}
+                        price={cartItem.sum}
                         title={cartItem.productTitle}
                     />
-                })}
+                )}
             </View>}
         </Card>
     )
@@ -39,7 +40,7 @@ const OrderItem = props => {
 const styles = StyleSheet.create({
     orderItem:{
         padding:10,
-        margin: 20,
+        margin:10,
         alignItems:'center'
     },
     summary:{
@@ -59,7 +60,9 @@ const styles = StyleSheet.create({
         color: '#888'
     },
     detailOrders: {
-        width:'100%'
+        width:'100%',
+        backgroundColor:'white',
+        maxHeight: '100%'
     }
 })
 

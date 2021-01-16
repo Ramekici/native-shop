@@ -9,7 +9,6 @@ import { addCart} from '../../store/actions/carts';
 
 export default ProductsDetailScreen = props => {
 
-    //const productId = props.navigation.getParam('productId')
     const {productId} = props.route.params;
     const selectedProduct = useSelector(state => 
             state.products.availableProducts.find(item => item.id === productId))
@@ -27,14 +26,24 @@ export default ProductsDetailScreen = props => {
                         dispatch(addCart(selectedProduct))}
                     title='Sepete Ekle'/>
             </View>
-            <Text style={styles.price}> {selectedProduct.price} </Text>
+            <Text style={styles.price}> {selectedProduct.price} ₺ </Text>
             <Text style={styles.description}> {selectedProduct.description} </Text>
        </ScrollView>
         
     )
 }
 
-
+export const screenOptions = navData => {
+    return {
+        headerTitle: navData.route.params.productTitle,
+        headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item title='Sepet'
+                    iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                    onPress={() => { navData.navigation.navigate('Cart') }} />
+            </HeaderButtons>)  
+    }
+}
 
 const styles = StyleSheet.create({
     image: {
@@ -62,14 +71,3 @@ const styles = StyleSheet.create({
 
 
 
-export const screenOptions = navData => {
-    return {
-        headerTitle: navData.route.params.productTitle,
-        headerRight: () => (
-            <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                <Item title='Sepet'
-                    iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
-                    onPress={() => { navData.navigation.navigate('Cart') }} />
-            </HeaderButtons>)  
-    }
-}

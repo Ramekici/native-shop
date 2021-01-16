@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { View, Text, FlatList, Platform, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Platform, ActivityIndicator, StyleSheet, SafeAreaView } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 
 import HeaderButton from '../../components/UI/HeaderButton';
@@ -37,27 +37,32 @@ const OrdersScreen = props => {
         </View>
     }
 
-    console.log(orders)
+    const renderItem = ({ item }) => (
+        <OrderItem 
+        amount={item.totalAmount}
+        date={item.date}
+        items={item.items}/>);
 
     return (
-        <FlatList 
-            data={orders}
-            keyExtractor={item => item.id}
-            renderItem={itemData => 
-            <OrderItem 
-                amount={itemData.item.totalAmount}
-                date={itemData.item.date}
-                items={itemData.item.items}/>} 
-        />
+        <SafeAreaView style={styles.container}>
+            <FlatList 
+                data={orders}
+                keyExtractor={item => item.id}
+                renderItem={renderItem}
+            />
+        </SafeAreaView>
         
     )
 }
 
 const styles = StyleSheet.create({
+    container:{
+        margin: 10,
+    },
     centered: {
         flex:1,
         alignItems:'center',
-        justifyContent:'center'
+        justifyContent:'center',
     }
 })
 

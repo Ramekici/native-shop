@@ -86,7 +86,6 @@ const AuthScreen = props => {
         setisLoading(true);
         try{
             await dispatch(action);
-            //props.navigation.navigate('Shop');//// Kontrol et
         } catch (error) {
             setError(error.message);
             setisLoading(false);
@@ -170,15 +169,8 @@ const styles = StyleSheet.create({
 
 
 export const screenOptions = navData => {
-
     return {
-        headerTitle:'Üyelik',
-        headerRight: () => ( 
-                <HeaderButtons HeaderButtonComponent={HeaderButton}>
-                    <Item title='Kaydet' 
-                        iconName={Platform.OS === 'android' ? 'md-checkmark': 'ios-checkmark'}
-                        onPress={()=> {}} />
-                </HeaderButtons>)
+        headerTitle:'Giriş'
     }
 }
 
